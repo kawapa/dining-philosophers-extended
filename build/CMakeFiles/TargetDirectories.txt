@@ -1,0 +1,3 @@
+C:/Git/dining-philosophers-extended/build/CMakeFiles/edit_cache.dir
+C:/Git/dining-philosophers-extended/build/CMakeFiles/main.dir
+C:/Git/dining-philosophers-extended/build/CMakeFiles/rebuild_cache.dir
