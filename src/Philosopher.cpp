@@ -4,6 +4,7 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <thread>
 
@@ -17,14 +18,20 @@ Philosopher::Philosopher(const std::string & name_, int forkIndexLeft_, int fork
 {
     lastMeal_ = std::chrono::steady_clock::now();
     generateAnswers();
-    std::cout << name_ << " was born\n";
+    print("was just born\n");
 }
 
-Philosopher::~Philosopher() { std::cout << name_ << " died\n"; }
+Philosopher::Philosopher(const Philosopher && other)
+    :
+    name_(other.name_),
+    forkIndexLeft_(other.forkIndexLeft_),
+    forkIndexRight_(other.forkIndexRight_) { }
+
+Philosopher::~Philosopher() { print("has just passed away\n"); }
 
 void Philosopher::answer()
 {
-    std::cout << name_ << " is answering\n";
+    print("is answering\n");
     std::this_thread::sleep_for(1s);
 }
 
@@ -88,12 +95,19 @@ void Philosopher::live()
 
 void Philosopher::think()
 {
-    std::cout << name_ << " is thinking\n";
+    print("is thinking\n");
     std::this_thread::sleep_for(1s);
 }
 
 void Philosopher::write()
 {
-    std::cout << name_ << " is writing\n";
+    print("is writing\n");
     std::this_thread::sleep_for(1s);
+}
+
+void Philosopher::print(const std::string & str)
+{
+    std::stringstream ss;
+    ss << name_ << " " << str << std::endl;
+    std::cout << ss.str();
 }

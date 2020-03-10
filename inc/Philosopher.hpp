@@ -19,6 +19,7 @@ struct Philosopher
     std::array<std::string, 10> answers_;
 
     Philosopher(const std::string &, int, int);
+    Philosopher(const Philosopher &&);
     ~Philosopher();
     bool alive();
     void answer();
@@ -28,6 +29,7 @@ struct Philosopher
     std::string getRandomAnswer();
     char getRandomChar();
     void live();
+    void print(const std::string &);
     void think();
     void write();
 };
