@@ -18,7 +18,7 @@ int main()
 
     Philosopher p1("Bobek", 1, 2);
 
-    std::cout << p1.name_;
+    std::cout << p1.name_ << " " << p1.answers_[3] << std::endl;
 
     return 0;
 }

@@ -1,7 +1,6 @@
 #pragma once
-#include "Book.hpp"
-#include "Reflection.hpp"
 #include <array>
+#include <atomic>
 #include <chrono>
 #include <string>
 
@@ -9,18 +8,24 @@ using namespace std::chrono_literals;
 
 struct Philosopher
 {
-    std::string name_ = "";
+    std::string name_;
     int forkIndexLeft_;
     int forkIndexRight_;
     bool hungry_ = true;
+    std::atomic<bool> alive {true};
+    std::atomic<bool> sleeps {false};
     std::chrono::seconds starveToDeath_ = 20s;
     std::array<std::string, 10> answers_;
 
-    Philosopher(std::string, int, int);
+    Philosopher(const std::string &, int, int);
+    ~Philosopher();
+    void answer();
+    int calculate(const std::string &, std::string &);
+    void eat();
+    void generateAnswers();
+    std::string getRandomAnswer();
+    char getRandomChar();
     void start();
     void think();
-    int calculate(std::string q, std::string a);
-    void eat();
     void write();
-    void answer();
 };

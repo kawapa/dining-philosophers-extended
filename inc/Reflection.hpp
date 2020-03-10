@@ -1,6 +1,4 @@
 #pragma once
-#include "Book.hpp"
-#include "Philosopher.hpp"
 #include <chrono>
 #include <string>
 
@@ -14,12 +12,5 @@ struct Reflection
     std::chrono::seconds period;
     bool chosen = false;
 
-    Reflection(std::string ph, std::string an, int re, std::chrono::seconds pe, bool ch)
-        :
-        philosopher(ph),
-        answer(an),
-        result(re),
-        period(pe),
-        chosen(ch)
-        { }
+    Reflection(const std::string &, const std::string &, int re, std::chrono::seconds pe, bool ch);
 };
