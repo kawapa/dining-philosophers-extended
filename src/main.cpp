@@ -13,12 +13,12 @@ std::mutex forks[5];
 
 int main()
 {
-    std::string question;
     Book book;
+    std::string question = "How are you?";
 
     Philosopher p1("Bobek", 1, 2);
 
-    std::cout << p1.name_ << " " << p1.answers_[3] << std::endl;
+    p1.live();
 
     return 0;
 }
