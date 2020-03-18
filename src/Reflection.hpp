@@ -13,5 +13,4 @@ struct Reflection
     bool chosen_;
 
     Reflection(std::string, std::string, int, int64_t, bool);
-    //~Reflection();
 };

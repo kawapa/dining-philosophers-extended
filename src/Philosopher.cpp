@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <chrono>
+//#include <condition_variable>
 #include <iostream>
 #include <sstream>
 #include <mutex>
@@ -33,7 +34,7 @@ void Philosopher::dine()
     {
         updateStatus();
         eat();
-        think(book_);
+        think();
         //write();
         //answer();
     }
@@ -83,21 +84,20 @@ void Philosopher::eat()
     updateStatus();
 }
 
-void Philosopher::think(Book & book)
+void Philosopher::think()
 {
     if (alive_ && !sleeping && full_)
     {
         wait();
-        //std::shared_lock l(book.mutexBook_);
-        print("accessed the book (for reading");
-        for (auto &&i : answers_)
+        print("accessed the book (for reading)");
+        for (size_t i = 0; i < 10; i++)
         {
             auto start = std::chrono::steady_clock::now();
-            auto tmp = calculate(questions_.front(), i);
+            auto tmp = calculate(questions_.front(), answers_[i]);
             auto end = std::chrono::steady_clock::now();
             auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-            std::unique_lock l(book.mutexBook_);
-            book.reflections_.emplace_back(name_, i, tmp, diff, false);
+            std::unique_lock l(book_.mutexBook_);
+            print("accessed the book (for writing)");
         }
     }
     updateStatus();

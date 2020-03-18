@@ -7,6 +7,7 @@
 #include <vector>
 #include "Philosopher.hpp"
 #include "Book.hpp"
+#include "Reflection.hpp"
 
 // number of philosophers and forks
 constexpr size_t n = 5;
@@ -21,6 +22,7 @@ int main()
     philosophers.reserve(n);
 
     Book book;
+    book.reflections_.reserve(100);
 
     std::queue<std::string> questions;
     questions.push("How are you?");

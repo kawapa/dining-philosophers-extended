@@ -8,5 +8,3 @@ Reflection::Reflection(std::string philosopher, std::string answer, int result, 
         result_(result),
         period_(period),
         chosen_(chosen) { }
-
-//Reflection::~Reflection() { }

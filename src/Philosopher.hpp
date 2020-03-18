@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <chrono>
+//#include <condition_variable>
 #include <mutex>
 #include <string>
 #include <queue>
@@ -14,6 +15,7 @@ struct Philosopher
     std::array<std::string, 10> answers_;
     Book & book_;
     std::queue<std::string> & questions_;
+    //std::condition_variable cv_;
 
     bool alive_ = true;
     bool full_ = false;
@@ -30,10 +32,9 @@ struct Philosopher
 
     void dine();
     void eat();
-    void think(Book & book);
+    void think();
     //void write();
     //void answer();
-
 
     void generateAnswers();
     std::string getRandomAnswer();
