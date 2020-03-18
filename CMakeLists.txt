@@ -1,9 +1,19 @@
-cmake_minimum_required(VERSION 2.8.9)
-project(dining_ph)
-set(CMAKE_BUILD_TYPE Release)
+cmake_minimum_required(VERSION 3.2)
 
-include_directories(inc)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB SOURCES "src/*.cpp")
+project(main)
 
-add_executable(main ${SOURCES})
+set(SRC_LIST
+    src/main.cpp
+    src/Philosopher.cpp
+    src/Philosopher.hpp
+)
+
+add_library(${PROJECT_NAME}-lib ${SRC_LIST})
+add_executable(${PROJECT_NAME} src/main.cpp)
+
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-lib pthread)
+endif (UNIX)

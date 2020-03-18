@@ -1,2 +1,2 @@
-#include "..\inc\Book.hpp"
+#include "Book.hpp"
 #include <string>
