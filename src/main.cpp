@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <atomic>
+#include <condition_variable>
 #include <chrono>
 #include <iostream>
 #include <mutex>

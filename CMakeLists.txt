@@ -9,6 +9,11 @@ set(SRC_LIST
     src/main.cpp
     src/Philosopher.cpp
     src/Philosopher.hpp
+    src/Book.cpp
+    src/Book.hpp
+    src/Reflection.cpp
+    src/Reflection.hpp
+
 )
 
 add_library(${PROJECT_NAME}-lib ${SRC_LIST})

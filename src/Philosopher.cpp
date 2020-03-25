@@ -1,6 +1,7 @@
 #include <algorithm>
+#include <atomic>
 #include <chrono>
-//#include <condition_variable>
+#include <condition_variable>
 #include <iostream>
 #include <sstream>
 #include <mutex>
@@ -12,8 +13,10 @@
 #include "Reflection.hpp"
 
 using namespace std::chrono_literals;
+std::condition_variable cv_;
 
-Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex & right, Book & book, std::queue<std::string> & questions)
+Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex & right, Book & book,
+            std::queue<std::string> & questions)
     :
     name_(name),
     forkLeft_(left),
@@ -26,7 +29,13 @@ Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex &
     print("has just born");
 }
 
-Philosopher::~Philosopher() {}
+Philosopher::Philosopher(Philosopher&& obj) :
+    name_(std::move(obj.name_)),
+    forkLeft_(obj.forkLeft_),
+    forkRight_(obj.forkRight_),
+    book_(obj.book_),
+    questions_(obj.questions_)
+    { }
 
 void Philosopher::dine()
 {
@@ -35,8 +44,7 @@ void Philosopher::dine()
         updateStatus();
         eat();
         think();
-        //write();
-        //answer();
+        //chooseAndAnswer();
     }
 }
 
@@ -45,7 +53,7 @@ void Philosopher::updateStatus()
     auto now = std::chrono::steady_clock::now();
     auto diff = std::chrono::duration_cast<std::chrono::seconds>(now - lastMeal_).count();
     
-    if (sleeping)
+    if (sleeping_)
     {
         if (diff > diesAfterWhileSleeping_)
         {
@@ -86,21 +94,36 @@ void Philosopher::eat()
 
 void Philosopher::think()
 {
-    if (alive_ && !sleeping && full_)
+    if (alive_ && !sleeping_ && full_)
     {
         wait();
         print("accessed the book (for reading)");
         for (size_t i = 0; i < 10; i++)
         {
+            updateStatus();
+            if (!alive_)
+                break;
             auto start = std::chrono::steady_clock::now();
-            auto tmp = calculate(questions_.front(), answers_[i]);
+
+            std::shared_lock<std::shared_mutex> lock(book_.mutexBook_);
+            auto tmpResult = calculate("How are you", answers_[i]);
+            lock.unlock();
+            wait();
+
+            //auto tmp = calculate(questions_.front(), answers_[i]);
             auto end = std::chrono::steady_clock::now();
-            auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-            std::unique_lock l(book_.mutexBook_);
-            print("accessed the book (for writing)");
+            auto tmpPeriod = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+            write(name_, answers_[i], tmpResult, tmpPeriod, i);
         }
     }
     updateStatus();
+}
+
+void Philosopher::write(std::string & name, std::string & answer, int result, int64_t period, int i)
+{
+    std::lock_guard<std::shared_mutex> lock(book_.mutexBook_);
+    book_.reflections_.emplace_back(name, answer, result, period, false);
+    print("writes down his", i);
 }
 
 void Philosopher::generateAnswers()
@@ -146,7 +169,14 @@ void Philosopher::print(std::string str)
     std::cout << ss.str();
 }
 
+void Philosopher::print(std::string str, int i)
+{
+    std::stringstream ss;
+    ss << name_ << " " << str << " " << i + 1 << " answer" << std::endl;
+    std::cout << ss.str();
+}
+
 void Philosopher::wait()
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 2000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 4000));
 }

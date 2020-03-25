@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
+#include <atomic>
 #include <chrono>
-//#include <condition_variable>
 #include <mutex>
 #include <string>
 #include <queue>
@@ -15,12 +15,11 @@ struct Philosopher
     std::array<std::string, 10> answers_;
     Book & book_;
     std::queue<std::string> & questions_;
-    //std::condition_variable cv_;
 
     bool alive_ = true;
     bool full_ = false;
-    bool sleeping = false;
-    //std::atomic<bool> sleeping_ {false};
+    //bool sleeping = false;
+    std::atomic<bool> sleeping_;
     
     std::chrono::steady_clock::time_point lastMeal_;
     int64_t diesAfter_ = 20;
@@ -28,19 +27,20 @@ struct Philosopher
     int64_t cantEatBefore_ = 3;
 
     Philosopher(const std::string, std::mutex &, std::mutex &, Book &, std::queue<std::string> &);
-    ~Philosopher();
+    Philosopher(Philosopher&& obj);
 
     void dine();
     void eat();
     void think();
-    //void write();
-    //void answer();
+    void write(std::string &, std::string &, int, int64_t, int);
+    //void chooseAndAnswer();
 
     void generateAnswers();
     std::string getRandomAnswer();
     char getRandomChar();
     int calculate(const std::string &, std::string &);
     void print(std::string str);
+    void print(std::string str, int);
     void updateStatus();
     void wait();
 };
