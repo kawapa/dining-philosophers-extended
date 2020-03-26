@@ -3,6 +3,7 @@
 #include <atomic>
 #include <chrono>
 #include <mutex>
+#include <random>
 #include <string>
 #include <queue>
 #include "Book.hpp"

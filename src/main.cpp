@@ -16,19 +16,16 @@ std::mutex forks[n];
 
 using namespace std::chrono_literals;
 
+void userInterface(std::vector<Philosopher> &, std::vector<std::string> &);
+
 int main()
 {
-    std::vector<std::thread> threads(n);
     std::vector<Philosopher> philosophers;
     philosophers.reserve(n);
 
-    Book book;
-    book.reflections_.reserve(100);
-
-    std::vector<std::string> questions;
-    questions.emplace_back("How are you?");
-    questions.emplace_back("Anyone?");
-    questions.emplace_back("What time is it?");
+    std::vector<std::thread> threads(n);
+    std::vector<std::string> questions {"How are you?"};
+    Book book;   
 
     std::string names[]{"Arystoteles", "Platon", "Epikur", "Siron",
                         "Demokryt", "Sokrates", "Zenon", "Parmenides", "Heraklit", "Tales"};
@@ -40,15 +37,45 @@ int main()
     for (size_t i = 0; i < n; i++)
         threads[i] = std::thread(&Philosopher::dine, &philosophers[i]);
 
-    while (std::any_of(philosophers.begin(), philosophers.end(), [](Philosopher & obj){
-        return obj.alive_ == true;
-        }))
-    {
-        std::this_thread::sleep_for(1s);
-    }
+    userInterface(philosophers, questions);
 
     for (auto &&i : threads)
         i.join();
     
     return 0;
+}
+
+void userInterface(std::vector<Philosopher> & philosophers, std::vector<std::string> & questions)
+{
+    std::string command;
+    std::string question;
+    std::string philo;
+
+    while (1)
+    {
+        std::cin >> command;
+        if (command == "question")
+        {
+            std::getline(std::cin, question);
+            questions.emplace_back(question);
+            std::cout << "Successfully added question!\n";
+        }
+        else if (command == "sleep")
+        {
+            std::cin >> philo;
+            auto search = std::find_if(philosophers.begin(), philosophers.end(), [&](Philosopher & obj){
+                return obj.name_ == philo; });
+            search->sleeping_ = true;
+            std::cout << search->name_ << " went to sleep\n";
+        }
+        else if (command == "wakeup")
+        {
+            std::cin >> philo;
+            auto search2 = std::find_if(philosophers.begin(), philosophers.end(), [&](Philosopher & obj){
+                return obj.name_ == philo; });
+            search2->sleeping_ = false;
+        }
+        else
+            std::cout << "Incorrect instruction\n";
+    }
 }
