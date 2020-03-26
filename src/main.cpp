@@ -5,7 +5,6 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <queue>
 #include <vector>
 #include "Philosopher.hpp"
 #include "Book.hpp"
@@ -26,9 +25,10 @@ int main()
     Book book;
     book.reflections_.reserve(100);
 
-    std::queue<std::string> questions;
-    questions.push("How are you?");
-
+    std::vector<std::string> questions;
+    questions.emplace_back("How are you?");
+    questions.emplace_back("Anyone?");
+    questions.emplace_back("What time is it?");
 
     std::string names[]{"Arystoteles", "Platon", "Epikur", "Siron",
                         "Demokryt", "Sokrates", "Zenon", "Parmenides", "Heraklit", "Tales"};

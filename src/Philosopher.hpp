@@ -14,11 +14,12 @@ struct Philosopher
     std::mutex & forkRight_;
     std::array<std::string, 10> answers_;
     Book & book_;
-    std::queue<std::string> & questions_;
+    std::vector<std::string> & questions_;
+    int currentQuestion = 0;
 
     bool alive_ = true;
     bool full_ = false;
-    //bool sleeping = false;
+    bool readyToAnswer_ = false;
     std::atomic<bool> sleeping_;
     
     std::chrono::steady_clock::time_point lastMeal_;
@@ -26,21 +27,23 @@ struct Philosopher
     int64_t diesAfterWhileSleeping_ = 60;
     int64_t cantEatBefore_ = 3;
 
-    Philosopher(const std::string, std::mutex &, std::mutex &, Book &, std::queue<std::string> &);
+    Philosopher(const std::string, std::mutex &, std::mutex &, Book &, std::vector<std::string> &);
     Philosopher(Philosopher&& obj);
 
     void dine();
     void eat();
     void think();
+    void chooseAndAnswer();
     void write(std::string &, std::string &, int, int64_t, int);
-    //void chooseAndAnswer();
+    void showAllAnswers();
 
     void generateAnswers();
     std::string getRandomAnswer();
     char getRandomChar();
-    int calculate(const std::string &, std::string &);
+    int calculate(std::string &, std::string &);
     void print(std::string str);
     void print(std::string str, int);
+    void print(int i, int j);
     void updateStatus();
     void wait();
 };

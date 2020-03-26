@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 std::condition_variable cv_;
 
 Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex & right, Book & book,
-            std::queue<std::string> & questions)
+            std::vector<std::string> & questions)
     :
     name_(name),
     forkLeft_(left),
@@ -26,6 +26,7 @@ Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex &
 {
     generateAnswers();
     lastMeal_ = std::chrono::steady_clock::now();
+    showAllAnswers();
     print("has just born");
 }
 
@@ -44,8 +45,9 @@ void Philosopher::dine()
         updateStatus();
         eat();
         think();
-        //chooseAndAnswer();
+        chooseAndAnswer();
     }
+    print("just died");
 }
 
 void Philosopher::updateStatus()
@@ -58,7 +60,7 @@ void Philosopher::updateStatus()
         if (diff > diesAfterWhileSleeping_)
         {
             alive_ = false;
-            print("just died");
+            //print("just died");
         }
         full_ = true;
     }
@@ -67,7 +69,7 @@ void Philosopher::updateStatus()
         if (diff > diesAfter_)
         {
             alive_ = false;
-            print("just died");
+            //print("just died");
         }
         if (diff < cantEatBefore_)
             full_ = true;
@@ -78,7 +80,7 @@ void Philosopher::updateStatus()
 
 void Philosopher::eat()
 {
-    if (alive_)
+    if (alive_ && !sleeping_)
     {      
         if (!full_)
         {
@@ -87,8 +89,17 @@ void Philosopher::eat()
         wait();
         print("has finished his meal");
         lastMeal_ = std::chrono::steady_clock::now();
-        } 
+        }
+        else
+        {
+            print("is full and can't eat at the moment");
+        }
     }
+    else if (alive_ && sleeping_)
+    {
+        print("is sleeping");
+    }
+    
     updateStatus();
 }
 
@@ -97,6 +108,8 @@ void Philosopher::think()
     if (alive_ && !sleeping_ && full_)
     {
         wait();
+        if (currentQuestion < questions_.size())
+        {
         print("accessed the book (for reading)");
         for (size_t i = 0; i < 10; i++)
         {
@@ -106,7 +119,7 @@ void Philosopher::think()
             auto start = std::chrono::steady_clock::now();
 
             std::shared_lock<std::shared_mutex> lock(book_.mutexBook_);
-            auto tmpResult = calculate("How are you", answers_[i]);
+            auto tmpResult = calculate(questions_[currentQuestion], answers_[i]);
             lock.unlock();
             wait();
 
@@ -114,7 +127,29 @@ void Philosopher::think()
             auto end = std::chrono::steady_clock::now();
             auto tmpPeriod = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
             write(name_, answers_[i], tmpResult, tmpPeriod, i);
+            std::cout << "I just wrote" << tmpResult << std::endl;
+            updateStatus();
         }
+        readyToAnswer_ = true;
+        currentQuestion++;
+        }
+    }
+    else if (alive_ && sleeping_)
+    {
+        print("is sleeping");
+    }
+    updateStatus();
+}
+
+void Philosopher::chooseAndAnswer()
+{
+    if (alive_ && readyToAnswer_)
+    {
+        std::lock_guard<std::shared_mutex> lock(book_.mutexBook_);
+        auto search = std::max_element(book_.reflections_.begin(), book_.reflections_.end(), [&](const Reflection & obj1, const Reflection & obj2){
+        return (obj1.philosopher_ == name_ && obj2.philosopher_ == name_ && obj1.result_ < obj2.result_); });
+        auto tmpAnswer = search->result_;
+        print(tmpAnswer, currentQuestion);
     }
     updateStatus();
 }
@@ -145,21 +180,30 @@ std::string Philosopher::getRandomAnswer()
 
 char Philosopher::getRandomChar()
 {
-    const char allChars[] =
+    char allChars[] =
     "0123456789"
     "!@#$%^&*"
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz";
 
     int size = sizeof(allChars) - 1;
+    std::rotate(allChars, allChars + rand() % 5, allChars + 8);
     return allChars[rand() % size];
 }
 
-int Philosopher::calculate(const std::string & q, std::string & a)
+void Philosopher::showAllAnswers()
+{
+    for (auto &&i : answers_)
+    {
+        std::cout << i << " ";
+    }
+}
+
+int Philosopher::calculate(std::string & q, std::string & a)
 {
     std::hash<std::string> h;
     std::string tmp = q + a;
-    return h(tmp) % 123456789;
+    return h(tmp);
 }
 
 void Philosopher::print(std::string str)
@@ -176,7 +220,14 @@ void Philosopher::print(std::string str, int i)
     std::cout << ss.str();
 }
 
+void Philosopher::print(int i, int j)
+{
+    std::stringstream ss;
+    ss << name_ << " answers " << i << " " << "for the " << j << "th question" << std::endl;
+    std::cout << ss.str();
+}
+
 void Philosopher::wait()
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 4000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 2000));
 }
