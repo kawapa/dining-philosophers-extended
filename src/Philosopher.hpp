@@ -43,8 +43,8 @@ struct Philosopher
     char getRandomChar();
     int calculate(std::string &, std::string &);
     void print(std::string str);
-    void print(std::string str, int);
-    void print(int i, int j);
+    void print(std::string str, int, int);
+    void print(int, int);
     void updateStatus();
     void wait();
 };

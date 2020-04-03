@@ -27,7 +27,7 @@ Philosopher::Philosopher(const std::string name, std::mutex & left, std::mutex &
 {
     generateAnswers();
     lastMeal_ = std::chrono::steady_clock::now();
-    showAllAnswers();
+    //showAllAnswers();
     print("has just born");
 }
 
@@ -108,7 +108,7 @@ void Philosopher::think()
         wait();
         if (currentQuestion < questions_.size())
         {
-        print("accessed the book (for reading)");
+
         for (size_t i = 0; i < 10; i++)
         {
             updateStatus();
@@ -117,6 +117,7 @@ void Philosopher::think()
             auto start = std::chrono::steady_clock::now();
 
             std::shared_lock<std::shared_mutex> lock(book_.mutexBook_);
+            print("accessed the book (for reading)");
             auto tmpResult = calculate(questions_[currentQuestion], answers_[i]);
             lock.unlock();
             wait();
@@ -124,7 +125,7 @@ void Philosopher::think()
             auto end = std::chrono::steady_clock::now();
             auto tmpPeriod = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
             write(name_, answers_[i], tmpResult, tmpPeriod, i);
-            std::cout << "I just wrote " << tmpResult << std::endl;
+            print("just wrote down his answer");
             updateStatus();
         }
         readyToAnswer_ = true;
@@ -160,7 +161,7 @@ void Philosopher::write(std::string & name, std::string & answer, int result, in
 {
     std::lock_guard<std::shared_mutex> lock(book_.mutexBook_);
     book_.reflections_.emplace_back(name, answer, result, period, false);
-    print("writes down his", i);
+    print("writes down his", i, result);
 }
 
 void Philosopher::generateAnswers()
@@ -218,10 +219,10 @@ void Philosopher::print(std::string str)
     std::cout << ss.str();
 }
 
-void Philosopher::print(std::string str, int i)
+void Philosopher::print(std::string str, int i, int result)
 {
     std::stringstream ss;
-    ss << name_ << " " << str << " " << i + 1 << " answer" << std::endl;
+    ss << name_ << " " << str << " " << i + 1 << " answer" << " - " << result << std::endl;
     std::cout << ss.str();
 }
 
@@ -234,5 +235,5 @@ void Philosopher::print(int i, int j)
 
 void Philosopher::wait()
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 8000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 2000));
 }
