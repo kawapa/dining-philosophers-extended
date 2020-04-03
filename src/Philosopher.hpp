@@ -16,15 +16,15 @@ struct Philosopher
     std::array<std::string, 10> answers_;
     Book & book_;
     std::vector<std::string> & questions_;
-    int currentQuestion = 0;
+    unsigned int currentQuestion = 0;
 
     bool alive_ = true;
     bool full_ = false;
     bool readyToAnswer_ = false;
-    std::atomic<bool> sleeping_;
+    std::atomic<bool> sleeping_ {false};
     
     std::chrono::steady_clock::time_point lastMeal_;
-    int64_t diesAfter_ = 20;
+    int64_t diesAfterNoEat_ = 20;
     int64_t diesAfterWhileSleeping_ = 60;
     int64_t cantEatBefore_ = 3;
 
@@ -46,5 +46,4 @@ struct Philosopher
     void print(std::string str, int, int);
     void print(int, int);
     void updateStatus();
-    void wait();
 };
