@@ -1,16 +1,22 @@
-# Dining philosophers - extended version
+# Description
 
-- [ ] Chłop zadaje ważne egzystencjalnie pytanie 5 filozofom (wprowadź je z klawiatury)
-- [ ] Każdy filozof posiada gotowy zestaw 10 odpowiedzi (każdy filozof ma inne odpowiedzi)
-- [ ] Każdy filozof podczas myślenia ma zaimplementowany inny algorytm obliczający pewne wartości
-- [ ] Algorytmy filozofów jako parametr wejściowy przyjmują pytanie (`std::string`) oraz odpowiedź (`std::string`) i zwracają liczbę int. Jeśli nie masz pomysłu na różne algorytmy oblicz kilkukrotny `std::hash` z zestawu pytanie + odpowiedź.
-- [ ] Wszyscy filozofowie podczas myślenia korzystają także z bardzo mądrej księgi, która stanowi dla nich inspirację. Wielu filozofów może odczytywać księge jednocześnie. Wartości zapisane w księdze także mogą być brane pod uwagę w algorytmie.
-- [ ] Każdy filozof musi przemyśleć każdą z 10 swoich odpowiedzi, która stanowi parametr wejściowy do jego algorytmu myślenia.
-- [ ] Zadania do przemyślenia przez filozofów możesz zaimplementować jako pulę wątków (Thread Pool).
-- [ ] Każdy filozof, aby przemyśleć pojednynczą odpowiedź musi być najedzony. Nie może więc rozpocząć myślenia bez jedzenia.
-- [ ] Każdy filozof potrzebuje 2 sztućców, aby móc się najeść. Liczba szućców jest równa liczbie filozofów.
-- [ ] Każdy filozof po przemyśleniu odpowiedzi zapisuje swoje rozważania w księdze. Tylko 1 filozof na raz może zapisywać rozważania i żaden inny nie może tym momencie korzystać z księgi.
-- [x] Przemyślenia w księdze mają następujący format:
+*Dining philosophers - extended version* is final project which concludes the course "Multithreading in C++" from Coders School (https://coders.school/).
+
+## Requirements
+
+- [ ] A peasant ask an existential question to 5 philosophers (the user types in the question in the console)
+- [ ] Each philosopher has its own set of 10 answers
+- [ ] Each philosopher uses different algorithm when thinking through all possible answers 
+- [ ] Algorithm for thinking requires two arguments (a question (`std::string`) and an answer (`std::string`)) and returns an integer
+- [ ] All philosophers, when thinking, use special Book which gives them a wisdom and inspiration
+- [ ] All philosophers can use the Book simultaneously for reading
+- [ ] A philosopher needs to think all his/her answers over before he decides on the final answer
+- [ ] Questions for the philosophers can be implemented as a thread pool
+- [ ] A philosopher must be full before he start thinking
+- [ ] In order to start a meal, a philosopher needs to collect two forks. Number of forks corresponds to the number of philosophers (this requirement comes from the original [dining-philosopher problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem))
+- [ ] A philosopher, after thinking over each answer writes down his/her thoughts in the Book
+- [ ] Writing in the Book requires an exclusive access
+- [ ] A single thought/reflection in the Book has the following format:
 
 ```cpp
 struct {
@@ -22,9 +28,9 @@ struct {
 }
 ```
 
-- [ ] Żaden filozof nie może się przejeść. Po posiłku musi on poczekać 3 sekundy zanim zacznie kolejny posiłek.
-- [ ] Jeśli filozof nie jadł przez 20 sekund to umiera śmiercią głodą. Nie dopuść do tego!
-- [ ] W czasie poszukiwania odpowiedzi, możesz usypiać filozofów. W tym celu musisz z klawiatury podać odpowiednią komendę w czasie działania programu (np. sleep Platon).
-- [ ] Uśpiony filozof nie może myśleć ani jeść. Umiera on z głodu dopiero po 60 sekundach.
-- [ ] Uśpionego filozofa można obudzić podając odpowiednią komendę z klawiatury (np. wakeup Platon).
-- [ ] Na koniec każdy filozof odczytuje odpowiedź która została przez niego wybrana (oblicza max z działań `result * period`). W tym celu musi odczytać księgę, gdyż tam zapisał swoje rozważania. Przy wybranej odpowiedzi ustawia `chosen = true`.
+- [ ] A philosopher needs to wait 3 seconds before he can start a new meal
+- [ ] A philosopher starve to death after 20 seconds from the last meal
+- [ ] During the program, the user can put a philosopher to sleep and wake him/her up (using a special command)
+- [ ] A sleeping philosopher cannot think nor eat and dies after 60 seconds
+- [ ] Each philosopher, once all answers are studied, returns the final answer for a question (and make `chosen = true`)
+- [ ] The final answer for a question is the maximum product of `result * period` of all answers
