@@ -104,9 +104,11 @@ void Philosopher::think()
 
             for (size_t i = 0; i < 10; i++)
             {
-                // updateStatus();
-                // if (!alive_)
-                    // break;
+                updateStatus();
+                if (!alive_ || sleeping_)
+                    break;
+                if (answersAnswered_[i] == true)
+                    continue;
                 auto start = std::chrono::steady_clock::now();
 
                 std::shared_lock<std::shared_mutex> lock(book_.mutexBook_);
@@ -119,22 +121,30 @@ void Philosopher::think()
                 auto tmpPeriod = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
                 writeToBook(name_, answers_[i], tmpResult, tmpPeriod, book_);
                 printFunc("writes down his", i, tmpResult, name_);
-                // updateStatus();
+                answersAnswered_[i] = true;
+                updateStatus();
             }
+            if (std::all_of(answersAnswered_.begin(), answersAnswered_.end(), [](const bool & obj){ return obj == true; }))
+            {
             readyToAnswer_ = true;
             currentQuestion++;
+            std::for_each(answersAnswered_.begin(), answersAnswered_.end(), [](bool & obj){ obj = false; });
+            }
         }
+        else
+            printFunc("found no new questions in the queue", name_);
     }
     else if (alive_ && sleeping_)
     {
         printFunc("is sleeping", name_);
+        wait();
     }
     updateStatus();
 }
 
 void Philosopher::chooseAndAnswer()
 {
-    if (alive_ && readyToAnswer_)
+    if (alive_ && readyToAnswer_ && !sleeping_)
     {
         std::lock_guard<std::shared_mutex> lock(book_.mutexBook_);
         auto search = std::max_element(book_.reflections_.begin(), book_.reflections_.end(),
@@ -182,12 +192,4 @@ char Philosopher::getRandomChar()
     std::uniform_int_distribution<> distr(0, sizeof(v_char) - 1);
 
     return v_char[distr(e)];
-}
-
-void Philosopher::showAllAnswers()
-{
-    for (auto &&i : answers_)
-    {
-        std::cout << i << " ";
-    }
 }

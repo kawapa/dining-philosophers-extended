@@ -14,6 +14,7 @@ struct Philosopher
     std::mutex & forkLeft_;
     std::mutex & forkRight_;
     std::array<std::string, 10> answers_;
+    std::array<bool, 10> answersAnswered_{false};
     Book & book_;
     std::vector<std::string> & questions_;
     unsigned int currentQuestion = 0;
