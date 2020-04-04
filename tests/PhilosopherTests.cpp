@@ -2,6 +2,19 @@
 #include <mutex>
 #include "../src/Philosopher.cpp"
 #include "../src/Wait.hpp"
+#include "../src/Print.hpp"
+
+void printFunc( [[maybe_unused]] const std::string &str, 
+                [[maybe_unused]] const std::string &name) {}
+
+void printFunc( [[maybe_unused]] const std::string &str, 
+                [[maybe_unused]] const int &i, 
+                [[maybe_unused]] const int &result, 
+                [[maybe_unused]] const std::string &name) {}
+
+void printFunc( [[maybe_unused]] const int &i, 
+                [[maybe_unused]] const int &j, 
+                [[maybe_unused]] const std::string &name) {}
 
 void wait() {}
 
@@ -41,9 +54,11 @@ SCENARIO("Philosopher sleeps and reaction for hunger", "[updateStatus]")
     GIVEN("Time of last meal that happened EARLIER than 60s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(59);
+        
         WHEN("Called update status method")
         {
             philosopher.updateStatus();
+
             THEN("Philosohper lives")
             {
                 REQUIRE(philosopher.alive_ == true);
@@ -54,9 +69,11 @@ SCENARIO("Philosopher sleeps and reaction for hunger", "[updateStatus]")
     GIVEN("Time of last meal that happened EXACTLY 60s ago")
     {
         philosopher.lastMeal_ =  countTimeFromNow(60);
+
         WHEN("Called updateStatus method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher dies")
             {
                 REQUIRE_FALSE(philosopher.alive_);
@@ -67,9 +84,11 @@ SCENARIO("Philosopher sleeps and reaction for hunger", "[updateStatus]")
      GIVEN("Time of last meal that happened OVER 60s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(61);
+
         WHEN("Called updateStatus method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher dies")
             {
                 REQUIRE_FALSE(philosopher.alive_);
@@ -94,9 +113,11 @@ SCENARIO("Philosopher is not sleeping and is full", "[updateStatus]")
     GIVEN("Time of last meal that happened EARLIER than 20s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(19);
+
         WHEN("Called updateStatus method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher lives and is not full")
             {
                 REQUIRE(philosopher.alive_);
@@ -108,9 +129,11 @@ SCENARIO("Philosopher is not sleeping and is full", "[updateStatus]")
     GIVEN("Time of last meal that happened EXACTLY 20s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(20);
+
         WHEN("Called update status method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher dies")
             {
                 REQUIRE_FALSE(philosopher.alive_);
@@ -121,9 +144,11 @@ SCENARIO("Philosopher is not sleeping and is full", "[updateStatus]")
     GIVEN("Time of last meal that happened OVER 20s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(21);
+
         WHEN("Called update status method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher dies")
             {
                 REQUIRE_FALSE(philosopher.alive_);
@@ -134,9 +159,11 @@ SCENARIO("Philosopher is not sleeping and is full", "[updateStatus]")
     GIVEN("Time of last meal that happened EARLIER than 3s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(2);
+
         WHEN("Called update status method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher stays full")
             {
                 REQUIRE(philosopher.full_);
@@ -147,9 +174,11 @@ SCENARIO("Philosopher is not sleeping and is full", "[updateStatus]")
     GIVEN("Time of last meal that happened EXACTLY 3s ago")
     {
         philosopher.lastMeal_ = countTimeFromNow(3);
+
         WHEN("Called update status method")
         {
             philosopher.updateStatus();
+
             THEN("Philosopher is not full")
             {
                 REQUIRE_FALSE(philosopher.full_);
@@ -294,9 +323,11 @@ SCENARIO("Philosopher is eating", "[eat]")
         REQUIRE(philosopher.sleeping_);
         REQUIRE_FALSE(philosopher.full_);
         REQUIRE_FALSE(philosopher.alive_);
+
         WHEN("Called eat method")
         {
             philosopher.eat();
+
             THEN("Nothing changes")
             {
                 REQUIRE(philosopher.sleeping_);
@@ -314,9 +345,11 @@ SCENARIO("Philosopher is eating", "[eat]")
         REQUIRE(philosopher.sleeping_);
         REQUIRE(philosopher.full_);
         REQUIRE_FALSE(philosopher.alive_);
+
         WHEN("Called eat method")
         {
             philosopher.eat();
+
             THEN("Nothing changes")
             {
                 REQUIRE(philosopher.sleeping_);
@@ -325,9 +358,7 @@ SCENARIO("Philosopher is eating", "[eat]")
             }
         }
     }
-    
 }
-
 
 
 

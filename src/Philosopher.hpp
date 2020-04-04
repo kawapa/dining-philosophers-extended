@@ -10,7 +10,7 @@
 
 struct Philosopher
 {
-    std::string name_;
+    const std::string name_;
     std::mutex & forkLeft_;
     std::mutex & forkRight_;
     std::array<std::string, 10> answers_;
@@ -35,15 +35,10 @@ struct Philosopher
     void eat();
     void think();
     void chooseAndAnswer();
-    void write(std::string &, std::string &, int, int64_t, int);
     void showAllAnswers();
 
     void generateAnswers();
     std::string getRandomAnswer();
     char getRandomChar();
-    int calculate(std::string &, std::string &);
-    void print(std::string str);
-    void print(std::string str, int, int);
-    void print(int, int);
     void updateStatus();
 };

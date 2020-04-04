@@ -13,6 +13,10 @@ set(SRC_LIST
     src/Reflection.cpp
     src/Reflection.hpp
     src/Wait.cpp
+    src/Print.cpp
+    src/Calculate.cpp
+    src/Write.hpp
+    src/Write.cpp
 
 )
 
@@ -29,6 +33,7 @@ set(TEST_SRC_LIST
     tests/BookTests.cpp
     tests/ReflectionTests.cpp
     tests/PhilosopherTests.cpp
+    tests/WriteTests.cpp
 )
 
 set(LIBS Catch2::Catch2 pthread)
