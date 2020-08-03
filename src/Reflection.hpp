@@ -1,11 +1,11 @@
 #pragma once
+
 #include <chrono>
 #include <string>
 
 using namespace std::chrono_literals;
 
-struct Reflection
-{
+struct Reflection {
     std::string philosopher_;
     std::string answer_;
     int result_;

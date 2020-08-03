@@ -1,13 +1,14 @@
 #include <algorithm>
 #include <atomic>
-#include <condition_variable>
 #include <chrono>
+#include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <thread>
 #include <vector>
-#include "Philosopher.hpp"
+
 #include "Book.hpp"
+#include "Philosopher.hpp"
 #include "Reflection.hpp"
 
 // number of philosophers and forks

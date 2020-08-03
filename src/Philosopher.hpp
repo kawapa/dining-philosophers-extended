@@ -1,4 +1,5 @@
 #pragma once
+
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -6,10 +7,10 @@
 #include <random>
 #include <string>
 #include <queue>
+
 #include "Book.hpp"
 
-struct Philosopher
-{
+struct Philosopher {
     const std::string name_;
     std::mutex & forkLeft_;
     std::mutex & forkRight_;

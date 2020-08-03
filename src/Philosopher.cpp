@@ -1,3 +1,5 @@
+#include "Philosopher.hpp"
+
 #include <algorithm>
 #include <atomic>
 #include <chrono>
@@ -9,14 +11,13 @@
 #include <shared_mutex>
 #include <string>
 #include <thread>
-#include "Philosopher.hpp"
+
 #include "Book.hpp"
+#include "Calculate.hpp"
 #include "Print.hpp"
 #include "Reflection.hpp"
-#include "Calculate.hpp"
 #include "Wait.hpp"
 #include "Write.hpp"
-
 
 using namespace std::chrono_literals;
 std::condition_variable cv_;

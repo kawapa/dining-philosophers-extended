@@ -1,12 +1,8 @@
-# Description
-
-*Dining philosophers - extended version* is one of the two final projects which conclude the course "Multithreading in C++" from Coders School (https://coders.school/).
-
-## Objective
+# Objective
 
 Implement a solution for a more advanced dining philosophers problem.
 
-## Detailed requirements
+# Detailed requirements
 
 * A peasant ask an existential question to 5 philosophers (the user types in the question in the console)
     * Questions for the philosophers can be implemented as a thread pool
